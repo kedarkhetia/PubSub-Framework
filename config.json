@@ -1,0 +1,6 @@
+{
+	"inputDirectory" : "./Input",
+	"outputDirectory" : "./Output",
+	"unixReviewTime" : "1362268800",
+	"brokerType" : "SynchronousOrderedDispatchBroker"
+}
