@@ -1,7 +1,6 @@
 package cs601.project2.collections;
 
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A Blocking Queue implementation that can be used by

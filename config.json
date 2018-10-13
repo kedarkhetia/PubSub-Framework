@@ -2,5 +2,9 @@
 	"inputDirectory" : "./Input",
 	"outputDirectory" : "./Output",
 	"unixReviewTime" : "1362268800",
-	"brokerType" : "SynchronousOrderedDispatchBroker"
+	"brokerType" : "AsyncUnorderedDispatchBroker",
+	"host" : "localhost",
+	"port" : "1080",
+	"remoteSubscribers" : ["NewReviewSubscriber", "OldReviewSubscriber"],
+	"localSubscribers" : ["NewReviewSubscriber", "OldReviewSubscriber"]
 }

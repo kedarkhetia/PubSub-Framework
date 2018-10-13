@@ -12,6 +12,42 @@ public class Config {
 	private String outputDirectory;
 	private String brokerType;
 	private String unixReviewTime;
+	private String host;
+	private int port;
+	private String[] remoteSubscribers;
+	private String[] localSubscribers;
+
+	public String[] getLocalSubscribers() {
+		return localSubscribers;
+	}
+
+	public void setLocalSubscribers(String[] localSubscribers) {
+		this.localSubscribers = localSubscribers;
+	}
+
+	public String[] getRemoteSubscribers() {
+		return remoteSubscribers;
+	}
+
+	public void setRemoteSubscribers(String[] remoteSubscribers) {
+		this.remoteSubscribers = remoteSubscribers;
+	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
 
 	public String getInputDirectory() {
 		return inputDirectory;

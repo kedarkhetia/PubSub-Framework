@@ -17,15 +17,13 @@ import cs601.project2.model.Review;
  *
  */ 
 public class OldReviewsSubscriber implements Subscriber<Review> {
-	private Broker<Review> broker;
 	private int baseUnixReviewTime;
 	private BufferedWriter out;
 	
 	public OldReviewsSubscriber(int baseUnixReviewTime, Path filePath, Broker<Review> broker) throws IOException {
-		this.broker = broker;
 		this.baseUnixReviewTime = baseUnixReviewTime;
 		this.out = Files.newBufferedWriter(filePath, StandardCharsets.ISO_8859_1);
-		this.broker.subscribe(this);
+		broker.subscribe(this);
 	}
 	
 	/**

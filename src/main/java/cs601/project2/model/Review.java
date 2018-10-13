@@ -1,12 +1,14 @@
 package cs601.project2.model;
 
+import java.io.Serializable;
+
 /**
  * This class is data model to represent Amazon reviews.
  * 
  * @author kmkhetia
  *
  */ 
-public class Review implements Comparable<Review>{
+public class Review implements Comparable<Review>, Serializable {
 	private String reviewerID;
 	private String asin;
 	private String reviewerName;

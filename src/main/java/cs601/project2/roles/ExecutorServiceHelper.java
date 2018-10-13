@@ -25,6 +25,9 @@ public class ExecutorServiceHelper<T> implements Runnable {
 	@Override
 	public void run() {
 		for(Subscriber<T> i : subscribers) {
+			if(item == null) {
+				System.out.println("NULL!!!!!!");
+			}
 			i.onEvent(item);
 		}
 	}

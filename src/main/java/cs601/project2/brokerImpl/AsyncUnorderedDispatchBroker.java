@@ -23,7 +23,7 @@ public class AsyncUnorderedDispatchBroker<T> implements Broker<T> {
 	private volatile boolean shutdownFlag;
 	private List<Subscriber<T>> subscribers;
  	private ExecutorService threadPool;
- 	private final int POOL_SIZE = 7;
+ 	private final int POOL_SIZE = 5;
 	
  	/**
 	 * Constructor for AsyncUnorderedDispatchBroker.
@@ -69,7 +69,7 @@ public class AsyncUnorderedDispatchBroker<T> implements Broker<T> {
 	public void shutdown() {
 		threadPool.shutdown();
 		try {
-			threadPool.awaitTermination(300, TimeUnit.MILLISECONDS);
+			while(!threadPool.awaitTermination(100, TimeUnit.MILLISECONDS)) {}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
