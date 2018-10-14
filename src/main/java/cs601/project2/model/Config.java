@@ -81,4 +81,13 @@ public class Config {
 		this.unixReviewTime = unixReviewTime;
 	}
 	
+	@Override
+	public String toString() {
+		return "inputDirectory: " + inputDirectory +
+				" outputDirectory: " + outputDirectory +
+				" brokerType: " + brokerType +
+				" unixReviewTime: " + unixReviewTime +
+				" host: " + host +
+				" port: " + port;
+	}
 }

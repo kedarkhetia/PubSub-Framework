@@ -6,6 +6,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
+
 import cs601.project2.broker.Broker;
 import cs601.project2.roles.ExecutorServiceHelper;
 import cs601.project2.roles.Subscriber;
@@ -24,6 +26,8 @@ public class AsyncUnorderedDispatchBroker<T> implements Broker<T> {
 	private List<Subscriber<T>> subscribers;
  	private ExecutorService threadPool;
  	private final int POOL_SIZE = 5;
+ 	
+ 	private final static Logger log = Logger.getLogger(AsyncUnorderedDispatchBroker.class);
 	
  	/**
 	 * Constructor for AsyncUnorderedDispatchBroker.
@@ -31,6 +35,7 @@ public class AsyncUnorderedDispatchBroker<T> implements Broker<T> {
 	public AsyncUnorderedDispatchBroker() {
 		this.subscribers = new LinkedList<Subscriber<T>>();
 		this.shutdownFlag = false;
+		log.info("Created executorService ThreadPool with size=" + POOL_SIZE);
 		this.threadPool = Executors.newFixedThreadPool(POOL_SIZE);
 	}
 	
@@ -42,9 +47,9 @@ public class AsyncUnorderedDispatchBroker<T> implements Broker<T> {
 	 */
 	@Override
 	public void publish(T item) {
-			if(!shutdownFlag) {
-				threadPool.execute(new ExecutorServiceHelper<T>(subscribers, item));
-			}
+		if(!shutdownFlag) {
+			threadPool.execute(new ExecutorServiceHelper<T>(subscribers, item));
+		}
 	}
 	
 	/**
@@ -67,12 +72,16 @@ public class AsyncUnorderedDispatchBroker<T> implements Broker<T> {
 	 */
 	@Override
 	public void shutdown() {
+		log.info("Shutdown broker called.");
 		threadPool.shutdown();
 		try {
-			while(!threadPool.awaitTermination(100, TimeUnit.MILLISECONDS)) {}
+			while(!threadPool.awaitTermination(100, TimeUnit.MILLISECONDS)) {
+				log.debug("ExecutorService is awaiting termination.");
+			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			log.error("Received InterruptedException=", e);
 		}
 		shutdownFlag = true;
+		log.info("shutdownFlag=" + shutdownFlag);
 	}
 }

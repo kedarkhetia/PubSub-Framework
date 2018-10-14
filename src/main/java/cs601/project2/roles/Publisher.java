@@ -6,10 +6,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import cs601.project2.broker.Broker;
+import cs601.project2.brokerImpl.AsyncUnorderedDispatchBroker;
 
 /**
  * It will read the publisher file convert them to Review object
@@ -23,10 +26,13 @@ public class Publisher<T> implements Runnable {
 	private Class<?> type;
 	private Broker<T> broker;
 	
+	private final static Logger log = Logger.getLogger(Publisher.class);
+	
 	public Publisher(Path filePath, Class<?> type, Broker<T> broker) {
 		this.filePath = filePath;
 		this.type = type;
 		this.broker = broker;
+		log.info("Initialized publisher for file=" + filePath.getFileName());
 	}
 	
 	/**
@@ -40,20 +46,16 @@ public class Publisher<T> implements Runnable {
 			BufferedReader in = Files.newBufferedReader(filePath, StandardCharsets.ISO_8859_1);
 			String data;
 			Gson gson = new Gson();
-			//int count = 0; // Remove this
 			while((data = in.readLine()) != null) {
 				try {
-					//count++; // Remove this
 					broker.publish((T) gson.fromJson(data, type));
-					//if(count > 100000) break; // Remove this
 				} catch(JsonSyntaxException e) {
-					//Ignoring JsonSyntaxException
-					//System.out.println(e.getMessage());
+					log.debug("Received JsonSyntaxException, ", e);
 				}
 			}
 			in.close();
 		} catch (IOException e) {
-			System.out.println(e.getMessage());
+			log.error("Received IOException, ", e);
 		}
 	}
 }

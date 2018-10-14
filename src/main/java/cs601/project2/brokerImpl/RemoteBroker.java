@@ -9,6 +9,8 @@ import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import cs601.project2.broker.Broker;
 import cs601.project2.roles.Subscriber;
 
@@ -20,14 +22,16 @@ import cs601.project2.roles.Subscriber;
  *
  */ 
 public class RemoteBroker<T> implements Broker<T>, Runnable {
-	
 	private List<Subscriber<T>> subscribers;
 	private Socket client;
 	private ObjectInputStream in;
 	private ObjectOutputStream out;
 	
-	public RemoteBroker(String hostname, int port) throws UnknownHostException, IOException {
+	private final static Logger log = Logger.getLogger(RemoteBroker.class);
+	
+	public RemoteBroker(String hostname, int port) throws IOException {
 		this.subscribers = new LinkedList<Subscriber<T>>();
+		log.info("Connecting to server using hostname=" + hostname + " port=" + port);
 		this.client = new Socket(hostname, port);
 		this.out = new ObjectOutputStream(client.getOutputStream());
 		this.in = new ObjectInputStream(client.getInputStream());
@@ -66,9 +70,11 @@ public class RemoteBroker<T> implements Broker<T>, Runnable {
 	@Override
 	public void shutdown() {
 		try {
+			log.info("Closing RemoteBroker client socket.");
 			in.close();
 			out.close();
 			client.close();
+			log.info("Closed RemoteBroker client socket.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -81,15 +87,16 @@ public class RemoteBroker<T> implements Broker<T>, Runnable {
 	 */
 	@Override
 	public void run() {
+		log.info("Publishing messages to subscriber.");
 		T element;
 		try {
 			while((element = (T) in.readObject()) != null) {
 				publish(element);
 			}
 		} catch (EOFException e) {
-			
+			log.debug("End of File!");
 		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
+			log.error("Received Exception, ", e);
 		}
 	}
 

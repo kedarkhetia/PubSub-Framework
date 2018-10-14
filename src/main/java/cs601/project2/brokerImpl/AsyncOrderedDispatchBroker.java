@@ -3,6 +3,8 @@ package cs601.project2.brokerImpl;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import cs601.project2.broker.Broker;
 import cs601.project2.collections.AsyncBlockingQueue;
 import cs601.project2.roles.Subscriber;
@@ -21,11 +23,14 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 	private AsyncBlockingQueue<T> blockingQueue;
 	private int QUEUE_SIZE = 1000;
 	
+	private final static Logger log = Logger.getLogger(AsyncOrderedDispatchBroker.class);
+	
 	/**
 	 * Constructor for AsyncOrderedDispatchBroker.
 	 */
 	public AsyncOrderedDispatchBroker() {
 		subscribers = new LinkedList<Subscriber<T>>();
+		log.info("Created Blocking queue with size=" + QUEUE_SIZE);
 		blockingQueue = new AsyncBlockingQueue<T>(QUEUE_SIZE);
 		shutdownFlag = false;
 	}
@@ -39,6 +44,7 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 	@Override
 	public void run() {
 		T element = blockingQueue.poll(300);
+		log.info("Starting to publish data on blocking queue.");
 		while(!shutdownFlag || !blockingQueue.isEmpty()) {
 			if(element != null) {
 				for(Subscriber<T> i : subscribers) {
@@ -47,6 +53,7 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 			}
 			element = blockingQueue.poll(300);
 		}
+		log.info("Completed publishing data to blocking queue.");
 	}
 	
 	/**
@@ -82,6 +89,8 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 	 */
 	@Override
 	public void shutdown() {
+		log.info("Shutdown broker called");
 		shutdownFlag = true;
+		log.info("shutdownFlag=" + shutdownFlag);
 	}
 }

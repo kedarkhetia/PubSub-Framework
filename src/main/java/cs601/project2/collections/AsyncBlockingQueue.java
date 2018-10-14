@@ -2,6 +2,10 @@ package cs601.project2.collections;
 
 import java.util.Date;
 
+import org.apache.log4j.Logger;
+
+import cs601.project2.brokerImpl.AsyncUnorderedDispatchBroker;
+
 /**
  * A Blocking Queue implementation that can be used by
  * Asynchronous broker to deliver message in an ordered
@@ -16,11 +20,15 @@ public class AsyncBlockingQueue<T> {
 	private int end;
 	private int size;
 	
+	private final static Logger log = Logger.getLogger(AsyncBlockingQueue.class);
+	
+	
 	public AsyncBlockingQueue(int size) {
 		this.items = (T[]) new Object[size];
 		this.start = 0;
 		this.end = - 1;
 		this.size = 0;
+		log.info("Initialized blocking queue");
 	}
 	
 	/**

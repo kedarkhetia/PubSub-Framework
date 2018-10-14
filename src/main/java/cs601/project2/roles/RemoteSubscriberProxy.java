@@ -8,7 +8,10 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import cs601.project2.broker.Broker;
+import cs601.project2.brokerImpl.AsyncUnorderedDispatchBroker;
 import cs601.project2.model.Connection;
 
 /**
@@ -24,15 +27,19 @@ public class RemoteSubscriberProxy<T> implements Subscriber<T>, Runnable {
 	private ServerSocket server;
 	private List<Connection> subscribers;
 	
+	private final static Logger log = Logger.getLogger(RemoteSubscriberProxy.class);
+	
 	public RemoteSubscriberProxy(Broker<T> broker, int port) throws IOException {
 		this.shutdownFlag = false;
 		this.subscribers = new LinkedList<Connection>();
 		this.server = new ServerSocket(port);
 		broker.subscribe(this);
+		log.info("Subscriber RemoteSubscriberProxy to Broker.");
 		Socket client = server.accept();
 		ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 		ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
 		subscribers.add(new Connection(client, in, out));
+		log.info("Accepted connection from=" + client);
 	}
 	
 	/**
@@ -64,12 +71,13 @@ public class RemoteSubscriberProxy<T> implements Subscriber<T>, Runnable {
 				ObjectOutputStream out = new ObjectOutputStream(client.getOutputStream());
 				ObjectInputStream in = new ObjectInputStream(client.getInputStream());
 				subscribers.add(new Connection(client, in, out));
+				log.info("Accepted connection from=" + client);
 			} catch (IOException e) {
 				if(server.isClosed()) {
-					
+					log.debug("Server is now Closed.");
 				}
 				else {
-					e.printStackTrace();
+					log.error("Received IOException, ", e);
 				}
 			}
 		}
@@ -82,6 +90,7 @@ public class RemoteSubscriberProxy<T> implements Subscriber<T>, Runnable {
 	 * to RemoteBroker. 
 	 */
 	public void shutdown() {
+		log.info("Shutdown RemoteSubscriber called.");
 		shutdownFlag = true;
 		try {
 			for(Connection subscriber : subscribers) {
@@ -90,9 +99,9 @@ public class RemoteSubscriberProxy<T> implements Subscriber<T>, Runnable {
 				subscriber.getClient().close();
 			}
 			server.close();
+			log.info("shutdownFlag=" + shutdownFlag);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Received IOException, ", e);
 		}
 	}
 	
