@@ -165,7 +165,7 @@ public class AmazonDriver {
 		remoteSubscriber.shutdown();
 		long end = System.currentTimeMillis();
 		log.info("End time of execution, endTime=" + end);
-		System.out.println((end-start) / 1000.0);
+		System.out.println((end-start) / 1000.0 + " Seconds");
 		log.info("Time: " + (end-start) / 1000.0 + " Seconds");
 	}
 	
