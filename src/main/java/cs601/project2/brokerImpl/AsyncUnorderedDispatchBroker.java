@@ -6,7 +6,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import cs601.project2.broker.Broker;
 import cs601.project2.roles.ExecutorServiceHelper;
@@ -27,7 +28,7 @@ public class AsyncUnorderedDispatchBroker<T> implements Broker<T> {
  	private ExecutorService threadPool;
  	private final int POOL_SIZE = 5;
  	
- 	private final static Logger log = Logger.getLogger(AsyncUnorderedDispatchBroker.class);
+ 	private final static Logger log = LogManager.getLogger(AsyncUnorderedDispatchBroker.class);
 	
  	/**
 	 * Constructor for AsyncUnorderedDispatchBroker.

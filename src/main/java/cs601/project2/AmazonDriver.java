@@ -10,7 +10,8 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 
@@ -34,17 +35,17 @@ import cs601.project2.roles.RemoteSubscriberProxy;
  *
  */ 
 public class AmazonDriver {
-	final static Logger log = Logger.getLogger(AmazonDriver.class);
+	final static Logger log = LogManager.getLogger(AmazonDriver.class);
 	
 	/**
 	 * It reads config file and create Broker, Subscriber and publishers based
 	 * on the configuration provided in config.json.
 	 * 
 	 * Expected usage:
-	 * 	java -cp project2.jar cs601.project2.AmazonDriver -config <Config json file> -type <server, client, local>
+	 * 	java -Dlog4j.configurationFile=src/main/resources/log4j2.properties -cp project2.jar cs601.project2.AmazonDriver - config <configFile Path> -type <server, client, local>
 	 * 
 	 * Example:
-	 * 	java -cp project2.jar cs601.project2.AmazonDriver -config config.json -type server
+	 * 	 java -Dlog4j.configurationFile=src/main/resources/log4j2.properties -cp project2.jar cs601.project2.AmazonDriver -config config.json -type local
 	 * 
 	 * @param args
 	 * @throws IOException
@@ -82,6 +83,7 @@ public class AmazonDriver {
 		} catch (IOException e) {
 			log.error("Received IOException, ", e);
 		}
+		LogManager.shutdown();
 	}
 	
 	/**

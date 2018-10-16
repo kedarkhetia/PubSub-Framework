@@ -3,7 +3,8 @@ package cs601.project2.brokerImpl;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import cs601.project2.broker.Broker;
 import cs601.project2.collections.AsyncBlockingQueue;
@@ -23,7 +24,7 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 	private AsyncBlockingQueue<T> blockingQueue;
 	private int QUEUE_SIZE = 1000;
 	
-	private final static Logger log = Logger.getLogger(AsyncOrderedDispatchBroker.class);
+	private final static Logger log = LogManager.getLogger(AsyncOrderedDispatchBroker.class);
 	
 	/**
 	 * Constructor for AsyncOrderedDispatchBroker.

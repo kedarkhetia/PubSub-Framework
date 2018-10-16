@@ -9,7 +9,8 @@ import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import cs601.project2.broker.Broker;
 import cs601.project2.roles.Subscriber;
@@ -27,7 +28,7 @@ public class RemoteBroker<T> implements Broker<T>, Runnable {
 	private ObjectInputStream in;
 	private ObjectOutputStream out;
 	
-	private final static Logger log = Logger.getLogger(RemoteBroker.class);
+	private final static Logger log = LogManager.getLogger(RemoteBroker.class);
 	
 	public RemoteBroker(String hostname, int port) throws IOException {
 		this.subscribers = new LinkedList<Subscriber<T>>();

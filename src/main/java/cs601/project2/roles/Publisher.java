@@ -6,7 +6,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -26,7 +27,7 @@ public class Publisher<T> implements Runnable {
 	private Class<?> type;
 	private Broker<T> broker;
 	
-	private final static Logger log = Logger.getLogger(Publisher.class);
+	private final static Logger log = LogManager.getLogger(Publisher.class);
 	
 	public Publisher(Path filePath, Class<?> type, Broker<T> broker) {
 		this.filePath = filePath;

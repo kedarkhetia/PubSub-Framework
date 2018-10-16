@@ -8,7 +8,8 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import cs601.project2.broker.Broker;
 import cs601.project2.brokerImpl.AsyncUnorderedDispatchBroker;
@@ -27,7 +28,7 @@ public class RemoteSubscriberProxy<T> implements Subscriber<T>, Runnable {
 	private ServerSocket server;
 	private List<Connection> subscribers;
 	
-	private final static Logger log = Logger.getLogger(RemoteSubscriberProxy.class);
+	private final static Logger log = LogManager.getLogger(RemoteSubscriberProxy.class);
 	
 	public RemoteSubscriberProxy(Broker<T> broker, int port) throws IOException {
 		this.shutdownFlag = false;

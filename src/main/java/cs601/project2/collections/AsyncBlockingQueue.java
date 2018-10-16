@@ -2,7 +2,8 @@ package cs601.project2.collections;
 
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import cs601.project2.brokerImpl.AsyncUnorderedDispatchBroker;
 
@@ -20,7 +21,7 @@ public class AsyncBlockingQueue<T> {
 	private int end;
 	private int size;
 	
-	private final static Logger log = Logger.getLogger(AsyncBlockingQueue.class);
+	private final static Logger log = LogManager.getLogger(AsyncBlockingQueue.class);
 	
 	
 	public AsyncBlockingQueue(int size) {

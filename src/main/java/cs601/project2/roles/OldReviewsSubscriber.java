@@ -6,7 +6,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import cs601.project2.broker.Broker;
 import cs601.project2.model.Review;
@@ -22,7 +23,7 @@ public class OldReviewsSubscriber implements Subscriber<Review> {
 	private int baseUnixReviewTime;
 	private BufferedWriter out;
 	
-	private final static Logger log = Logger.getLogger(NewReviewsSubscriber.class);
+	private final static Logger log = LogManager.getLogger(NewReviewsSubscriber.class);
 	
 	public OldReviewsSubscriber(int baseUnixReviewTime, Path filePath, Broker<Review> broker) throws IOException {
 		this.baseUnixReviewTime = baseUnixReviewTime;
