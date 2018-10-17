@@ -44,7 +44,7 @@ public class OldReviewsSubscriber implements Subscriber<Review> {
 	 */ 
 	@Override
 	public void onEvent(Review item) {
-		if(item.getUnixReviewTime() <= baseUnixReviewTime) {
+		if(item != null && item.getUnixReviewTime() <= baseUnixReviewTime) {
 			try {
 				lock.lock();
 				count++;

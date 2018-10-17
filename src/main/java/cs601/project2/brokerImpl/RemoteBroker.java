@@ -88,13 +88,13 @@ public class RemoteBroker<T> implements Broker<T>, Runnable {
 	@Override
 	public void run() {
 		log.info("Publishing messages to subscriber.");
-		T element;
+		T element = null;
 		try {
 			while((element = (T) in.readObject()) != null) {
 				publish(element);
 			}
 		} catch (EOFException e) {
-			log.debug("End of File!");
+			log.debug("End of File!"); 
 		} catch (ClassNotFoundException | IOException e) {
 			log.error("Received Exception, ", e);
 		}

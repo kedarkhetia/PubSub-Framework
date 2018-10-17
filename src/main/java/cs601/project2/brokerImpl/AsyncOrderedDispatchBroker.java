@@ -55,6 +55,10 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 			}
 			element = blockingQueue.poll(TIMEOUT);
 		}
+		// Publishing last event
+		for(Subscriber<T> i : subscribers) {
+			i.onEvent(element);
+		}
 		log.info("Completed publishing data to blocking queue.");
 	}
 	
