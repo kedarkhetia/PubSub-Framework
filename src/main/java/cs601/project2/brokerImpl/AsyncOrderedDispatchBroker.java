@@ -68,7 +68,6 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 	public synchronized void publish(T item) {
 		if(!shutdownFlag) {
 			blockingQueue.put(item);
-			log.info(item);
 		}
 	}
 	

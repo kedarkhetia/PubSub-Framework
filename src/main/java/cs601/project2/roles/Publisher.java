@@ -64,7 +64,9 @@ public class Publisher<T> implements Runnable {
 	}
 	
 	/**
-	 * Returns count of items received.
+	 * Returns count of items published.
+	 * 
+	 * @return count
 	 */
 	public static int getCount() {
 		return count;

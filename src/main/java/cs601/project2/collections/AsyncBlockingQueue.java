@@ -1,11 +1,7 @@
 package cs601.project2.collections;
 
-import java.util.Date;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import cs601.project2.brokerImpl.AsyncUnorderedDispatchBroker;
 
 /**
  * A Blocking Queue implementation that can be used by
@@ -84,6 +80,7 @@ public class AsyncBlockingQueue<T> {
 	
 	/**
 	 * Checks if queue is empty of not.
+	 * 
 	 */
 	public synchronized boolean isEmpty() {
 		return size == 0;

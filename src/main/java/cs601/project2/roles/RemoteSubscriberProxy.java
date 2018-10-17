@@ -7,13 +7,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import cs601.project2.broker.Broker;
-import cs601.project2.brokerImpl.AsyncUnorderedDispatchBroker;
 import cs601.project2.model.Connection;
 
 /**
@@ -57,7 +55,7 @@ public class RemoteSubscriberProxy<T> implements Subscriber<T>, Runnable {
 			try {
 				subscriber.getOut().writeObject(item);
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("Received IOExcption, ", e);
 			}
 		}
 		count++;
@@ -111,6 +109,8 @@ public class RemoteSubscriberProxy<T> implements Subscriber<T>, Runnable {
 	
 	/**
 	 * Returns count of items received.
+	 * 
+	 * @return count;
 	 */
 	public static int getCount() {
 		return count;

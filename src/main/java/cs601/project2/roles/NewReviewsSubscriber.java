@@ -51,13 +51,15 @@ public class NewReviewsSubscriber implements Subscriber<Review> {
 				lock.unlock();
 				out.write(item + "\n");
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("Received IOException, ", e);
 			}
 		}
 	}
 	
 	/**
 	 * Returns count of items received.
+	 * 
+	 * @return count
 	 */
 	public static int getCount() {
 		return count;

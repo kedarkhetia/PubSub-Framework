@@ -35,7 +35,7 @@ import cs601.project2.roles.RemoteSubscriberProxy;
  *
  */ 
 public class AmazonDriver {
-	final static Logger log = LogManager.getLogger(AmazonDriver.class);
+	private final static Logger log = LogManager.getLogger(AmazonDriver.class);
 	
 	/**
 	 * It reads config file and create Broker, Subscriber and publishers based
@@ -83,9 +83,11 @@ public class AmazonDriver {
 		} catch (IOException e) {
 			log.error("Received IOException, ", e);
 		}
-		LogManager.shutdown();
 	}
 	
+	/**
+	 * Prints the Object processed by Publishers, Subscribers and RemoteSubscribers.
+	 */
 	private static void print() {
 		System.out.println("Publisher Published: " + Publisher.getCount() + " Objects");
 		System.out.println("RemoteSubscriber Processed: " + RemoteSubscriberProxy.getCount() + " Objects");
@@ -122,16 +124,7 @@ public class AmazonDriver {
 			log.info("Creating publisher for file=" + file.getName());
 			publisherThreads.add(new Thread(new Publisher<Review>(Paths.get(file.getAbsolutePath()), Review.class, broker)));
 		}
-		for(String str : config.getLocalSubscribers()) {
-			if(str.equals("NewReviewSubscriber")) {
-				log.info("Creating new Review Subscriber");
-				new NewReviewsSubscriber(Integer.parseInt(config.getUnixReviewTime()) , Paths.get(config.getOutputDirectory() + "/NewReviews.json"), broker);
-			}
-			else if(str.equals("OldReviewSubscriber")) {
-				log.info("Creating old Review Subscriber");
-				new OldReviewsSubscriber(Integer.parseInt(config.getUnixReviewTime()) , Paths.get(config.getOutputDirectory() + "/OldReviews.json"), broker);
-			}
-		}
+		configSubscribers(config, broker, config.getLocalSubscribers());
 		long start = System.currentTimeMillis();
 		log.info("Start time of execution, startTime=" + start);
 		execute(publisherThreads, broker);
@@ -159,16 +152,7 @@ public class AmazonDriver {
 		}
 		RemoteSubscriberProxy<Review> remoteSubscriber = new RemoteSubscriberProxy<Review>(broker, config.getPort());
 		new Thread(remoteSubscriber).start();
-		for(String str : config.getLocalSubscribers()) {
-			if(str.equals("NewReviewSubscriber")) {
-				log.info("Creating new Review Subscriber");
-				new NewReviewsSubscriber(Integer.parseInt(config.getUnixReviewTime()) , Paths.get(config.getOutputDirectory() + "/NewReviews.json"), broker);
-			}
-			else if(str.equals("OldReviewSubscriber")) {
-				log.info("Creating old Review Subscriber");
-				new OldReviewsSubscriber(Integer.parseInt(config.getUnixReviewTime()) , Paths.get(config.getOutputDirectory() + "/OldReviews.json"), broker);
-			}
-		}
+		configSubscribers(config, broker, config.getLocalSubscribers());
 		long start = System.currentTimeMillis();
 		log.info("Start time of execution, startTime=" + start);
 		execute(publisherThreads, broker);
@@ -191,14 +175,24 @@ public class AmazonDriver {
 		log.info("Starting broker=RemoteBroker");
 		RemoteBroker<Review> remoteBroker = new RemoteBroker<Review>(config.getHost(), config.getPort());
 		new Thread(remoteBroker).start();
-		for(String str : config.getRemoteSubscribers()) {
+		configSubscribers(config, remoteBroker, config.getRemoteSubscribers());
+	}
+	
+	/**
+	 * It configures remote and local subscribers.
+	 * 
+	 * @throws IOException 
+	 * @throws NumberFormatException 
+	 */
+	public static void configSubscribers(Config config, Broker<Review> broker, String[] subscribers) throws NumberFormatException, IOException {
+		for(String str : subscribers) {
 			if(str.equals("NewReviewSubscriber")) {
 				log.info("Creating new Review Remote Subscriber");
-				new NewReviewsSubscriber(Integer.parseInt(config.getUnixReviewTime()) , Paths.get(config.getOutputDirectory() + "/NewReviews.json"), remoteBroker);
+				new NewReviewsSubscriber(Integer.parseInt(config.getUnixReviewTime()) , Paths.get(config.getOutputDirectory() + "/NewReviews.json"), broker);
 			}
 			else if(str.equals("OldReviewSubscriber")) {
 				log.info("Creating old Review Remote Subscriber");
-				new OldReviewsSubscriber(Integer.parseInt(config.getUnixReviewTime()) , Paths.get(config.getOutputDirectory() + "/OldReviews.json"), remoteBroker);
+				new OldReviewsSubscriber(Integer.parseInt(config.getUnixReviewTime()) , Paths.get(config.getOutputDirectory() + "/OldReviews.json"), broker);
 			}
 		}
 	}
@@ -278,7 +272,8 @@ public class AmazonDriver {
 		}
 		else {
 			log.debug("Unidentified Broker!");
-			return null;
+			System.exit(0);
 		}
+		return null;
 	}
 }
