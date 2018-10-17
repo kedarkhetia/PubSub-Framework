@@ -45,7 +45,7 @@ public class RemoteBroker<T> implements Broker<T>, Runnable {
 	 * @param item
 	 */
 	@Override
-	public void publish(T item) {
+	public synchronized void publish(T item) {
 		for(Subscriber<T> subscriber : subscribers) {
 			subscriber.onEvent(item);
 		}
@@ -100,5 +100,6 @@ public class RemoteBroker<T> implements Broker<T>, Runnable {
 			log.error("Received Exception, ", e);
 		}
 	}
-
+	
+	
 }

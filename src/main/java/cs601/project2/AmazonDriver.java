@@ -86,6 +86,12 @@ public class AmazonDriver {
 		LogManager.shutdown();
 	}
 	
+	private static void print() {
+		System.out.println("RemoteSubscriber Processed: " + RemoteSubscriberProxy.getCount() + " Objects");
+		System.out.println("NewReviewSubscriber Processed: " + NewReviewsSubscriber.getCount() + " Objects");
+		System.out.println("OldReviewSubscriber Processed: " + OldReviewsSubscriber.getCount() + " Objects"); 
+	}
+
 	/**
 	 * The function validates the input parameters passed 
 	 * while executing the program.
@@ -169,6 +175,7 @@ public class AmazonDriver {
 		log.info("End time of execution, endTime=" + end);
 		System.out.println((end-start) / 1000.0 + " Seconds");
 		log.info("Time: " + (end-start) / 1000.0 + " Seconds");
+		print();
 	}
 	
 	/**

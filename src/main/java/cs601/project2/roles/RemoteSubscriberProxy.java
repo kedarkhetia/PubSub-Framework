@@ -27,6 +27,7 @@ public class RemoteSubscriberProxy<T> implements Subscriber<T>, Runnable {
 	private volatile boolean shutdownFlag;
 	private ServerSocket server;
 	private List<Connection> subscribers;
+	private static int count = 0;
 	
 	private final static Logger log = LogManager.getLogger(RemoteSubscriberProxy.class);
 	
@@ -53,6 +54,7 @@ public class RemoteSubscriberProxy<T> implements Subscriber<T>, Runnable {
 	public synchronized void onEvent(T item) {
 		for(Connection subscriber : subscribers) {
 			try {
+				count++;
 				subscriber.getOut().writeObject(item);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -106,4 +108,10 @@ public class RemoteSubscriberProxy<T> implements Subscriber<T>, Runnable {
 		}
 	}
 	
+	/**
+	 * Returns count of items received.
+	 */
+	public static int getCount() {
+		return count;
+	}
 }

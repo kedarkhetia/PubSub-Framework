@@ -23,6 +23,7 @@ import cs601.project2.model.Review;
 public class NewReviewsSubscriber implements Subscriber<Review> {
 	private int baseUnixReviewTime;
 	private BufferedWriter out;
+	private static int count = 0;
 	
 	private final static Logger log = LogManager.getLogger(NewReviewsSubscriber.class);
 	
@@ -40,13 +41,21 @@ public class NewReviewsSubscriber implements Subscriber<Review> {
 	 * @param item
 	 */ 
 	@Override
-	public void onEvent(Review item) {
+	public synchronized void onEvent(Review item) {
 		if(item.getUnixReviewTime() > baseUnixReviewTime) {
 			try {
+				count++;
 				out.write(item + "\n");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	/**
+	 * Returns count of items received.
+	 */
+	public static int getCount() {
+		return count;
 	}
 }
