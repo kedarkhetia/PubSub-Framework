@@ -26,7 +26,7 @@ public class AsyncUnorderedDispatchBroker<T> implements Broker<T> {
 	private volatile boolean shutdownFlag;
 	private List<Subscriber<T>> subscribers;
  	private ExecutorService threadPool;
- 	private final int POOL_SIZE = 5;
+ 	private final int POOL_SIZE = 3;
  	
  	private final static Logger log = LogManager.getLogger(AsyncUnorderedDispatchBroker.class);
 	

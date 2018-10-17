@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +23,7 @@ import cs601.project2.model.Review;
 public class OldReviewsSubscriber implements Subscriber<Review> {
 	private int baseUnixReviewTime;
 	private BufferedWriter out;
+	private ReentrantLock lock;
 	private static int count = 0;
 	
 	private final static Logger log = LogManager.getLogger(NewReviewsSubscriber.class);
@@ -30,6 +32,7 @@ public class OldReviewsSubscriber implements Subscriber<Review> {
 		this.baseUnixReviewTime = baseUnixReviewTime;
 		this.out = Files.newBufferedWriter(filePath, StandardCharsets.ISO_8859_1);
 		broker.subscribe(this);
+		lock = new ReentrantLock();
 		log.info("Subscribed OldReviewsSubscriber to broker.");
 	}
 	
@@ -40,10 +43,12 @@ public class OldReviewsSubscriber implements Subscriber<Review> {
 	 * @param item
 	 */ 
 	@Override
-	public synchronized void onEvent(Review item) {
-		if(item.getUnixReviewTime() < baseUnixReviewTime) {
+	public void onEvent(Review item) {
+		if(item.getUnixReviewTime() <= baseUnixReviewTime) {
 			try {
+				lock.lock();
 				count++;
+				lock.unlock();
 				out.write(item + "\n");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

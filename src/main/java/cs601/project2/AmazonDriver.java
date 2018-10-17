@@ -87,6 +87,7 @@ public class AmazonDriver {
 	}
 	
 	private static void print() {
+		System.out.println("Publisher Published: " + Publisher.getCount() + " Objects");
 		System.out.println("RemoteSubscriber Processed: " + RemoteSubscriberProxy.getCount() + " Objects");
 		System.out.println("NewReviewSubscriber Processed: " + NewReviewsSubscriber.getCount() + " Objects");
 		System.out.println("OldReviewSubscriber Processed: " + OldReviewsSubscriber.getCount() + " Objects"); 
@@ -138,6 +139,7 @@ public class AmazonDriver {
 		log.info("End time of execution, endTime=" + end);
 		System.out.println("Time: " + (end-start) / 1000.0 + " Seconds");
 		log.info("Time: " + (end-start) / 1000.0 + " Seconds");
+		print();
 	}
 
 	/**

@@ -13,7 +13,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import cs601.project2.broker.Broker;
-import cs601.project2.brokerImpl.AsyncUnorderedDispatchBroker;
 
 /**
  * It will read the publisher file convert them to Review object
@@ -26,6 +25,7 @@ public class Publisher<T> implements Runnable {
 	private Path filePath;
 	private Class<?> type;
 	private Broker<T> broker;
+	private static int count = 0;
 	
 	private final static Logger log = LogManager.getLogger(Publisher.class);
 	
@@ -49,6 +49,9 @@ public class Publisher<T> implements Runnable {
 			Gson gson = new Gson();
 			while((data = in.readLine()) != null) {
 				try {
+					synchronized(broker) {
+						count++;
+					}
 					broker.publish((T) gson.fromJson(data, type));
 				} catch(JsonSyntaxException e) {
 					log.debug("Received JsonSyntaxException, ", e);
@@ -58,5 +61,12 @@ public class Publisher<T> implements Runnable {
 		} catch (IOException e) {
 			log.error("Received IOException, ", e);
 		}
+	}
+	
+	/**
+	 * Returns count of items received.
+	 */
+	public static int getCount() {
+		return count;
 	}
 }

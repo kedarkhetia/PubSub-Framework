@@ -5,12 +5,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import cs601.project2.broker.Broker;
-import cs601.project2.brokerImpl.AsyncUnorderedDispatchBroker;
 import cs601.project2.model.Review;
 
 /**
@@ -23,6 +23,7 @@ import cs601.project2.model.Review;
 public class NewReviewsSubscriber implements Subscriber<Review> {
 	private int baseUnixReviewTime;
 	private BufferedWriter out;
+	private ReentrantLock lock;
 	private static int count = 0;
 	
 	private final static Logger log = LogManager.getLogger(NewReviewsSubscriber.class);
@@ -31,6 +32,7 @@ public class NewReviewsSubscriber implements Subscriber<Review> {
 		this.baseUnixReviewTime = baseUnixReviewTime;
 		this.out = Files.newBufferedWriter(filePath, StandardCharsets.ISO_8859_1);
 		broker.subscribe(this);
+		lock = new ReentrantLock();
 		log.info("Subscribed NewReviewsSubscriber to broker.");
 	}
 	
@@ -41,10 +43,12 @@ public class NewReviewsSubscriber implements Subscriber<Review> {
 	 * @param item
 	 */ 
 	@Override
-	public synchronized void onEvent(Review item) {
+	public void onEvent(Review item) {
 		if(item.getUnixReviewTime() > baseUnixReviewTime) {
 			try {
+				lock.lock();
 				count++;
+				lock.unlock();
 				out.write(item + "\n");
 			} catch (IOException e) {
 				e.printStackTrace();

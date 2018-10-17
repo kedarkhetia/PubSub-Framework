@@ -23,6 +23,7 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 	private List<Subscriber<T>> subscribers;
 	private AsyncBlockingQueue<T> blockingQueue;
 	private int QUEUE_SIZE = 1000;
+	private int TIMEOUT = 300;
 	
 	private final static Logger log = LogManager.getLogger(AsyncOrderedDispatchBroker.class);
 	
@@ -44,7 +45,7 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 	 */
 	@Override
 	public void run() {
-		T element = blockingQueue.poll(300);
+		T element = blockingQueue.poll(TIMEOUT);
 		log.info("Starting to publish data on blocking queue.");
 		while(!shutdownFlag || !blockingQueue.isEmpty()) {
 			if(element != null) {
@@ -52,7 +53,7 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 					i.onEvent(element);
 				}
 			}
-			element = blockingQueue.poll(300);
+			element = blockingQueue.poll(TIMEOUT);
 		}
 		log.info("Completed publishing data to blocking queue.");
 	}
@@ -67,6 +68,7 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 	public synchronized void publish(T item) {
 		if(!shutdownFlag) {
 			blockingQueue.put(item);
+			log.info(item);
 		}
 	}
 	

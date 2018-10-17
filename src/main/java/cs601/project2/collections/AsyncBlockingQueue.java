@@ -64,16 +64,11 @@ public class AsyncBlockingQueue<T> {
 	 */
 	public synchronized T poll(long timeout) {
 		try {
-			if(size == 0) {
-				Date now = new Date();
-				long diff = (new Date()).getTime() - now.getTime();
-				while(size == 0 && diff < timeout) {
-					this.wait(timeout - diff);
-					diff = (new Date()).getTime() - now.getTime();
+			while(size == 0) {
+				wait(timeout);
+				if(size == 0) {
+					return null;
 				}
-			}
-			if(size == 0) {
-				return null;
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

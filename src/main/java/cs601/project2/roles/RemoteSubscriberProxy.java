@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,12 +55,12 @@ public class RemoteSubscriberProxy<T> implements Subscriber<T>, Runnable {
 	public synchronized void onEvent(T item) {
 		for(Connection subscriber : subscribers) {
 			try {
-				count++;
 				subscriber.getOut().writeObject(item);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+		count++;
 	}
 	
 	/**
