@@ -1,7 +1,6 @@
 package cs601.project2.brokerImpl;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +19,7 @@ import cs601.project2.roles.Subscriber;
  */ 
 public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 	private volatile boolean shutdownFlag;
-	private List<Subscriber<T>> subscribers;
+	private ConcurrentLinkedQueue<Subscriber<T>> subscribers;
 	private AsyncBlockingQueue<T> blockingQueue;
 	private int QUEUE_SIZE = 1000;
 	private int TIMEOUT = 300;
@@ -31,7 +30,7 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 	 * Constructor for AsyncOrderedDispatchBroker.
 	 */
 	public AsyncOrderedDispatchBroker() {
-		subscribers = new LinkedList<Subscriber<T>>();
+		subscribers = new ConcurrentLinkedQueue<Subscriber<T>>();
 		log.info("Created Blocking queue with size=" + QUEUE_SIZE);
 		blockingQueue = new AsyncBlockingQueue<T>(QUEUE_SIZE);
 		shutdownFlag = false;
@@ -56,8 +55,10 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 			element = blockingQueue.poll(TIMEOUT);
 		}
 		// Publishing last event
-		for(Subscriber<T> i : subscribers) {
-			i.onEvent(element);
+		if(element != null) {
+			for(Subscriber<T> i : subscribers) {
+				i.onEvent(element);
+			}
 		}
 		log.info("Completed publishing data to blocking queue.");
 	}
@@ -69,7 +70,7 @@ public class AsyncOrderedDispatchBroker<T> implements Broker<T>, Runnable {
 	 * @param item
 	 */
 	@Override
-	public synchronized void publish(T item) {
+	public void publish(T item) {
 		if(!shutdownFlag) {
 			blockingQueue.put(item);
 		}

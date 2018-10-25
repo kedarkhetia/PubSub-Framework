@@ -1,7 +1,6 @@
 package cs601.project2.brokerImpl;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -24,7 +23,7 @@ import cs601.project2.roles.Subscriber;
 public class AsyncUnorderedDispatchBroker<T> implements Broker<T> {
 
 	private volatile boolean shutdownFlag;
-	private List<Subscriber<T>> subscribers;
+	private ConcurrentLinkedQueue<Subscriber<T>> subscribers;
  	private ExecutorService threadPool;
  	private final int POOL_SIZE = 3;
  	
@@ -34,7 +33,7 @@ public class AsyncUnorderedDispatchBroker<T> implements Broker<T> {
 	 * Constructor for AsyncUnorderedDispatchBroker.
 	 */
 	public AsyncUnorderedDispatchBroker() {
-		this.subscribers = new LinkedList<Subscriber<T>>();
+		this.subscribers = new ConcurrentLinkedQueue<Subscriber<T>>();
 		this.shutdownFlag = false;
 		log.info("Created executorService ThreadPool with size=" + POOL_SIZE);
 		this.threadPool = Executors.newFixedThreadPool(POOL_SIZE);

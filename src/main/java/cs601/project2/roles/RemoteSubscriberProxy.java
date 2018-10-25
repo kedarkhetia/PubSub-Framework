@@ -5,8 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,14 +24,14 @@ import cs601.project2.model.Connection;
 public class RemoteSubscriberProxy<T> implements Subscriber<T>, Runnable {
 	private volatile boolean shutdownFlag;
 	private ServerSocket server;
-	private List<Connection> subscribers;
+	private ConcurrentLinkedQueue<Connection> subscribers;
 	private static int count = 0;
 	
 	private final static Logger log = LogManager.getLogger(RemoteSubscriberProxy.class);
 	
 	public RemoteSubscriberProxy(Broker<T> broker, int port) throws IOException {
 		this.shutdownFlag = false;
-		this.subscribers = new LinkedList<Connection>();
+		this.subscribers = new ConcurrentLinkedQueue<Connection>();
 		this.server = new ServerSocket(port);
 		broker.subscribe(this);
 		log.info("Subscriber RemoteSubscriberProxy to Broker.");

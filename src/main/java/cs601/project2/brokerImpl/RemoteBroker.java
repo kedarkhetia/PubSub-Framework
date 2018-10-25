@@ -5,8 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +21,7 @@ import cs601.project2.roles.Subscriber;
  *
  */ 
 public class RemoteBroker<T> implements Broker<T>, Runnable {
-	private List<Subscriber<T>> subscribers;
+	private ConcurrentLinkedQueue<Subscriber<T>> subscribers;
 	private Socket client;
 	private ObjectInputStream in;
 	private ObjectOutputStream out;
@@ -30,7 +29,7 @@ public class RemoteBroker<T> implements Broker<T>, Runnable {
 	private final static Logger log = LogManager.getLogger(RemoteBroker.class);
 	
 	public RemoteBroker(String hostname, int port) throws IOException {
-		this.subscribers = new LinkedList<Subscriber<T>>();
+		this.subscribers = new ConcurrentLinkedQueue<Subscriber<T>>();
 		log.info("Connecting to server using hostname=" + hostname + " port=" + port);
 		this.client = new Socket(hostname, port);
 		this.out = new ObjectOutputStream(client.getOutputStream());

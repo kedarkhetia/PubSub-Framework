@@ -1,6 +1,6 @@
 package cs601.project2.roles;
 
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,12 +16,12 @@ import cs601.project2.AmazonDriver;
  *
  */ 
 public class ExecutorServiceHelper<T> implements Runnable {
-	private List<Subscriber<T>> subscribers;
+	private ConcurrentLinkedQueue<Subscriber<T>> subscribers;
 	private T item;
 	
 	private final static Logger log = LogManager.getLogger(AmazonDriver.class);
 	 
-	public ExecutorServiceHelper(List<Subscriber<T>> subscribers, T item) {
+	public ExecutorServiceHelper(ConcurrentLinkedQueue<Subscriber<T>> subscribers, T item) {
 		this.subscribers = subscribers;
 		this.item = item;
 	}
