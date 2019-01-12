@@ -1,8 +1,6 @@
 Publish/Subscribe Framework
 =======================================
 
-### Due - Monday, October 8, 2018 - 11am
-
 For this project, I have implemented a message broker framework that will support [publish/subscribe](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) functionality. I have used following:
 
 - Concurrency and threads
